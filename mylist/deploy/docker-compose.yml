@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+      target: prod
+    image: mylist:${MYLIST_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MYLIST_HOST: 0.0.0.0
+      MYLIST_DB_HOST: mylist-db
+      MYLIST_DB_PORT: 3306
+      MYLIST_DB_USER: mylist
+      MYLIST_DB_PASS: mylist
+      MYLIST_DB_BASE: mylist
+
+  db:
+    image: bitnami/mysql:8.0.30
+    hostname: mylist-db
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: "mylist"
+      MYSQL_ROOT_PASSWORD: "mylist"
+      MYSQL_DATABASE: "mylist"
+      MYSQL_AUTHENTICATION_PLUGIN: "mysql_native_password"
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 10s
+      timeout: 5s
+      retries: 40
+    volumes:
+    - mylist-db-data:/bitnami/mysql/data
+
+
+
+volumes:
+  mylist-db-data:
+    name: mylist-db-data
