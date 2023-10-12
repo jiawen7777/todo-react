@@ -5,42 +5,45 @@ import TextField from "@mui/material/TextField";
 import { Box, Checkbox, Collapse,CardContent, Container } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import { useTodos } from "./TodoService";
-
 
 const App = () => {
-
+  const [todos, setTodos] = useState([]);
+  const [todoEditing, setTodoEditing] = useState(null);
   const [expandedItem, setExpandedItem] = useState(null); 
-  const {
-    todos,
-    subTasks,
-    todoEditing,
-    handleAddParentTask,
-    handleAddSubTask,
-    handleFetchAllSubTasks,
-    handleToggleSubTaskComplete,
-    handleToggleParentTaskComplete,
-    handleParentTaskEdit,
-    handleSubTaskEdit,
-    handleDeleteParentTask,
-    handleDeleteSubTask,
-    setTodos,
-    setSubTasks,
-    setTodoEditing
-  } = useTodos();
+  const [subTasks, setSubTasks] = useState([]);
+
+  const API_URL = "http://localhost:8000/api"; // Replace with your backend URL
 
   const buttonStyle = {
     margin: "4px", // Add margin to the buttons
   };
 
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    async function fetchTodos() {
+      try {
+        const response = await axios.get(`${API_URL}/todos`);
+        setTodos(response.data.data);
+      } catch (error) {
+        console.error("Error fetching todos:", error);
+      }
+    }
+
+    fetchTodos();
+  }, []);
+
+  async function handleSubmit(e) {
     e.preventDefault();
     const todoText = document.getElementById("todoAdd").value.trim();
 
     if (todoText.length > 0) {
       try {
-        await handleAddParentTask(todoText); // 使用 handleAddTodo 函数
+        const response = await axios.post(`${API_URL}/todos`, {
+          title: todoText,
+          is_completed: false,
+        });
+
+        setTodos([...todos, response.data]);
         document.getElementById("todoAdd").value = "";
       } catch (error) {
         console.error("Error adding todo:", error);
@@ -48,7 +51,7 @@ const App = () => {
     } else {
       alert("Enter a valid task");
     }
-  };
+  }
 
 
   async function handleSubmitSubTask(e, id) {
@@ -58,7 +61,12 @@ const App = () => {
     console.log(todoText);
     if (todoText.length > 0) {
       try {
-        handleAddSubTask(todoText, id);
+        const response = await axios.post(`${API_URL}/todos/${id}`, {
+          title: todoText,
+          is_completed: false,
+        });
+
+        setSubTasks([...subTasks, response.data]);
         document.getElementById(subTaskAddId).value = "";
       } catch (error) {
         console.error("Error adding todo:", error);
@@ -69,33 +77,119 @@ const App = () => {
   }
 
   async function deleteTodo(id) {
-    handleDeleteParentTask(id);
+    try {
+      await axios.delete(`${API_URL}/todos/${id}`);
+      const updatedTodos = todos.filter((todo) => todo.id !== id);
+      setTodos(updatedTodos);
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+    }
   }
 
   async function deleteSubTask(id) {
-    handleDeleteSubTask(id);
+    try {
+      await axios.delete(`${API_URL}/todos/${id}`);
+      const updatedSubTasks = subTasks.filter((subTask) => subTask.id !== id);
+      setSubTasks(updatedSubTasks);
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+    }
   }
   
   async function fetchSubTasks(id) {
-    handleFetchAllSubTasks(id);
+    const response = await axios.get(`${API_URL}/todos/${id}`);
+    try {
+      setSubTasks(response.data.data);
+    } catch (error) {
+      console.error("Error fetching todos:", error);
+    }
   }
 
   async function toggleComplete(id) {
-    handleToggleParentTaskComplete(id);
+    try {
+      const response = await axios.put(`${API_URL}/todos/${id}`, {
+        is_completed: !todos.find((todo) => todo.id === id).is_completed,
+        title: todos.find((todo) => todo.id === id).title,
+      });
+
+      const updatedTodos = todos.map((todo) => {
+        if (todo.id === id) {
+          return response.data;
+        }
+        return todo;
+      });
+
+      setTodos(updatedTodos);
+    } catch (error) {
+      console.error("Error updating todo:", error);
+    }
   }
+
 
   async function toggleSubTaskComplete(id) {
-    handleToggleSubTaskComplete(id);
+    try {
+      const response = await axios.put(`${API_URL}/todos/${id}`, {
+        is_completed: !subTasks.find((subTask) => subTask.id === id).is_completed,
+        title: subTasks.find((subTask) => subTask.id === id).title,
+      });
+
+      const updatedSubTasks = subTasks.map((subTask) => {
+        if (subTask.id === id) {
+          return response.data;
+        }
+        return subTask;
+      });
+
+      setSubTasks(updatedSubTasks);
+    } catch (error) {
+      console.error("Error updating todo:", error);
+    }
   }
 
-  async function submitEdits(currentTask) {
-    const updatedText = document.getElementById(currentTask.id).value;
-    handleParentTaskEdit(updatedText, currentTask);
+  async function submitEdits(newTodo) {
+    const updatedText = document.getElementById(newTodo.id).value;
+
+    try {
+      const response = await axios.put(`${API_URL}/todos/${newTodo.id}`, {
+        title: updatedText,
+        is_completed: newTodo.is_completed,
+      });
+
+      const updatedTodos = todos.map((todo) => {
+        if (todo.id === newTodo.id) {
+          return response.data;
+        }
+        return todo;
+      });
+
+      setTodos(updatedTodos);
+      setTodoEditing(null);
+    } catch (error) {
+      console.error("Error editing todo:", error);
+    }
   }
 
-  async function submitSubTaskEdit(currentSubTask) {
-    const updatedText = document.getElementById(currentSubTask.id).value;
-    handleSubTaskEdit(updatedText, currentSubTask);
+  async function submitSubTaskEdit(newSubTask) {
+    const updatedText = document.getElementById(newSubTask.id).value;
+
+    try {
+      const response = await axios.put(`${API_URL}/todos/${newSubTask.id}`, {
+        title: updatedText,
+        is_completed: newSubTask.is_completed,
+      });
+
+      const updatedSubTasks = subTasks.map((subTask) => {
+        if (subTask.id === newSubTask.id) {
+          return response.data;
+        }
+        return subTask;
+      });
+
+      setSubTasks(updatedSubTasks);
+      setTodoEditing(null);
+    } catch (error) {
+      console.error("Error editing todo:", error);
+    }
   }
 
 
