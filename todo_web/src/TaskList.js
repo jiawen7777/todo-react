@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { useTodos } from "./TodoService";
 import ListEntity from "./ListEntity";
-import ColorButton from "./ColorButton";
 
 const TaskList = () => {
   const [expandedItem, setExpandedItem] = useState(null);

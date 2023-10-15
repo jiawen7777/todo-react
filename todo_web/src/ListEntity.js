@@ -7,7 +7,7 @@ import { Collapse } from "@mui/material";
 import ColorButton from "./ColorButton";
 import DeleteButton from "./DeleteButton";
 import "./style.css";
-
+import { useRef } from "react";
 function TodoList({
   todos,
   todoEditing,
@@ -26,6 +26,30 @@ function TodoList({
   toggleSubTaskComplete,
   handleSubmit,
 }) {
+
+  const gridRef = useRef(null);
+
+  const handleTaskClick = (task) => {
+    if (task.id !== todoEditing) {
+      setTodoEditing(task.id);
+    }
+  };
+
+  const handleTaskBlur = (task) => {
+    submitEdits(task);
+    if (todoEditing !== null) {
+      setTodoEditing(null);
+    }
+  };
+
+  const handleEnter = (event, task) => {
+    if (event.key === "Enter") {
+      submitEdits(task);
+      if (todoEditing !== null) {
+        setTodoEditing(null);
+      }
+    }
+  };
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} className="custom-grid-item">
@@ -63,8 +87,11 @@ function TodoList({
               backgroundColor: todo.is_completed ? "#f2f2f2" : "#ffffff",
               cursor: "pointer",
             }}
+            ref={gridRef}
             className="custom-grid-item"
-            onClick={() => {
+            onClick={(event) => {
+              // 当事件的目标是 Grid 本身时，执行你的 onClick 逻辑
+              console.log("Grid clicked");
               setExpandedItem(expandedItem === todo.id ? null : todo.id);
               setSubTasks([]);
               fetchSubTasks(todo.id);
@@ -85,6 +112,9 @@ function TodoList({
                       type="text"
                       id={todo.id}
                       defaultValue={todo.title}
+                      fullWidth
+                      onBlur={() => handleTaskBlur(todo)}
+                      onKeyDown={(event) => handleEnter(event,todo)}
                     />
                   ) : (
                     <div
@@ -93,6 +123,7 @@ function TodoList({
                           ? "line-through"
                           : "none",
                       }}
+                      onClick={() => handleTaskClick(todo)}
                     >
                       {todo.title}
                     </div>
@@ -101,30 +132,12 @@ function TodoList({
               </Grid>
             </Grid>
             <Grid item xs={2}>
-              <Grid container spacing={1}>
-                <Grid item xs={6} fullWidth>
-                  {todo.id === todoEditing ? (
-                    <ColorButton onClick={() => submitEdits(todo)}>
-                      Submit Edits
-                    </ColorButton>
-                  ) : (
-                    <ColorButton
-                      variant="outlined"
-                      onClick={() => setTodoEditing(todo.id)}
-                    >
-                      Edit
-                    </ColorButton>
-                  )}
-                </Grid>
-                <Grid item xs={6} fullWidth>
-                  <DeleteButton
-                    variant="outlined"
-                    onClick={() => deleteTodo(todo.id)}
-                  >
-                    Delete
-                  </DeleteButton>
-                </Grid>
-              </Grid>
+              <DeleteButton
+                variant="outlined"
+                onClick={() => deleteTodo(todo.id)}
+              >
+                Delete
+              </DeleteButton>
             </Grid>
             <Grid item xs={12} justifyContent={"right"}>
               <Collapse
