@@ -1,7 +1,7 @@
 // SubList.js
 
 import React from "react";
-import { Checkbox, TextField, Button, Grid } from "@mui/material";
+import { Checkbox, TextField, Grid } from "@mui/material";
 import ColorButton from "./ColorButton";
 import DeleteButton from "./DeleteButton";
 const SubList = ({
@@ -13,9 +13,10 @@ const SubList = ({
   deleteSubTask,
 }) => {
   return (
-    <Grid container spacing={2} >
+    <Grid container>
       {subTasks.map((subTask) => (
-        <Grid container spacing={2} key={subTask.id}>
+        <Grid container key={subTask.id}>
+          {/* complete checkbox */}
           <Grid item xs={2}>
             <Checkbox
               id="is_completed"
@@ -23,7 +24,8 @@ const SubList = ({
               onChange={() => toggleSubTaskComplete(subTask.id)}
             />
           </Grid>
-          <Grid item xs={5}>
+          {/* text field */}
+          <Grid item xs={8}>
             {subTask.id === todoEditing ? (
               <TextField
                 type="text"
@@ -43,27 +45,27 @@ const SubList = ({
             )}
           </Grid>
           <Grid item xs={2}>
-            {subTask.id === todoEditing ? (
-              <ColorButton onClick={() => submitSubTaskEdit(subTask)}>
-                Submit Edits
-              </ColorButton>
-            ) : (
-              <ColorButton
-                variant="contained"
-                onClick={() => setTodoEditing(subTask.id)}
-              >
-                Edit
-              </ColorButton>
-            )}
-          </Grid>
-          <Grid item xs={2}>
-            <DeleteButton
-              variant="contained"
-              style={{ backgroundColor: "red", color: "white" }}
-              onClick={() => deleteSubTask(subTask.id)}
-            >
-              Delete
-            </DeleteButton>
+            <Grid container>
+              <Grid item xs={6}>
+                {subTask.id === todoEditing ? (
+                  <ColorButton onClick={() => submitSubTaskEdit(subTask)}>
+                    Submit Edits
+                  </ColorButton>
+                ) : (
+                  <ColorButton
+                    variant="outlined"
+                    onClick={() => setTodoEditing(subTask.id)}
+                  >
+                    Edit
+                  </ColorButton>
+                )}
+              </Grid>
+              <Grid item xs={6}>
+                <DeleteButton onClick={() => deleteSubTask(subTask.id)}>
+                  Delete
+                </DeleteButton>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       ))}

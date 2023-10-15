@@ -1,13 +1,14 @@
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { pink } from "@mui/material/colors";
+import { deepOrange } from "@mui/material/colors";
 
 const DeleteButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(pink[500]),
-  backgroundColor: pink[500],
+  color: theme.palette.getContrastText(deepOrange[200]),
+  backgroundColor: deepOrange[200],
   "&:hover": {
-    backgroundColor: pink[700],
+    backgroundColor: deepOrange[400],
   },
+  borderColor: deepOrange[400],
   margin: 5,
 }));
 

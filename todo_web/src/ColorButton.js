@@ -1,13 +1,13 @@
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { indigo } from "@mui/material/colors";
+import { orange } from "@mui/material/colors";
 
 const ColorButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(indigo[500]),
-  backgroundColor: indigo[500],
+  color: theme.palette.getContrastText(orange[200]),
   "&:hover": {
-    backgroundColor: indigo[700],
+    backgroundColor: orange[500],
   },
+  borderColor: orange[500],
   margin: 5,
 }));
 
