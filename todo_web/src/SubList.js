@@ -1,8 +1,9 @@
 // SubList.js
 
 import React from "react";
-import { Checkbox, TextField, Button } from "@mui/material";
-
+import { Checkbox, TextField, Button, Grid } from "@mui/material";
+import ColorButton from "./ColorButton";
+import DeleteButton from "./DeleteButton";
 const SubList = ({
   subTasks,
   todoEditing,
@@ -12,10 +13,17 @@ const SubList = ({
   deleteSubTask,
 }) => {
   return (
-    <div>
+    <Grid container spacing={2} >
       {subTasks.map((subTask) => (
-        <div key={subTask.id}>
-          <div>
+        <Grid container spacing={2} key={subTask.id}>
+          <Grid item xs={2}>
+            <Checkbox
+              id="is_completed"
+              checked={subTask.is_completed}
+              onChange={() => toggleSubTaskComplete(subTask.id)}
+            />
+          </Grid>
+          <Grid item xs={5}>
             {subTask.id === todoEditing ? (
               <TextField
                 type="text"
@@ -33,40 +41,33 @@ const SubList = ({
                 {subTask.title}
               </div>
             )}
-          </div>
-          <div>
-            <Checkbox
-              id="is_completed"
-              checked={subTask.is_completed}
-              onChange={() => toggleSubTaskComplete(subTask.id)}
-            />
-          </div>
-          <div>
+          </Grid>
+          <Grid item xs={2}>
             {subTask.id === todoEditing ? (
-              <Button onClick={() => submitSubTaskEdit(subTask)}>
+              <ColorButton onClick={() => submitSubTaskEdit(subTask)}>
                 Submit Edits
-              </Button>
+              </ColorButton>
             ) : (
-              <Button
+              <ColorButton
                 variant="contained"
                 onClick={() => setTodoEditing(subTask.id)}
               >
                 Edit
-              </Button>
+              </ColorButton>
             )}
-          </div>
-          <div>
-            <Button
+          </Grid>
+          <Grid item xs={2}>
+            <DeleteButton
               variant="contained"
               style={{ backgroundColor: "red", color: "white" }}
               onClick={() => deleteSubTask(subTask.id)}
             >
               Delete
-            </Button>
-          </div>
-        </div>
+            </DeleteButton>
+          </Grid>
+        </Grid>
       ))}
-    </div>
+    </Grid>
   );
 };
 

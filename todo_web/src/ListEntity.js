@@ -5,9 +5,10 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import SubList from "./SubList";
 import { Collapse } from "@mui/material";
-const buttonStyle = {
-  margin: "4px", // Add margin to the buttons
-};
+import ColorButton from "./ColorButton";
+import DeleteButton from "./DeleteButton";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 function TodoList({
   todos,
@@ -69,7 +70,39 @@ function TodoList({
                   </div>
                 )}
               </Grid>
+              <Grid item xs={12}></Grid>
+              <Grid item xs={9}></Grid>
             </Grid>
+          </Grid>
+          <Grid
+            item
+            xs={5}
+            align="right"
+            padding={2}
+            marginLeft={10}
+            justifyContent="center"
+          >
+            {todo.id === todoEditing ? (
+              <ColorButton onClick={() => submitEdits(todo)}>
+                Submit Edits
+              </ColorButton>
+            ) : (
+              <ColorButton
+                variant="contained"
+                onClick={() => setTodoEditing(todo.id)}
+              >
+                Edit
+              </ColorButton>
+            )}
+            <DeleteButton
+              variant="contained"
+              style={{ backgroundColor: "red", color: "white" }}
+              onClick={() => deleteTodo(todo.id)}
+            >
+              Delete
+            </DeleteButton>
+          </Grid>
+          <Grid item xs={12}>
             <Button
               onClick={() => {
                 setExpandedItem(expandedItem === todo.id ? null : todo.id);
@@ -77,65 +110,49 @@ function TodoList({
                 fetchSubTasks(todo.id);
               }}
             >
-              {expandedItem === todo.id ? "^" : "V"}
+              {expandedItem === todo.id ? (
+                <KeyboardArrowUpIcon />
+              ) : (
+                <KeyboardArrowDownIcon />
+              )}
             </Button>
+          </Grid>
+          <Grid item xs={9} fullWidth justifyContent={"right"}>
             <Collapse in={expandedItem === todo.id}>
               <form onSubmit={(event) => handleSubmitSubTask(event, todo.id)}>
-                <TextField
-                  type="text"
-                  id={"subTaskAdd" + todo.id}
-                  fullWidth
-                  inputProps={{ style: { textAlign: "left", padding: "10px" } }}
-                />
-                <Button
-                  variant="contained"
-                  fullWidth
-                  inputProps={{ padding: "10px", maxWidth: "100%" }}
-                  type="submit"
-                >
-                  Add Work
-                </Button>
+                <Grid container spacing={5} align="right">
+                  <Grid item xs={8} align="right">
+                    <TextField
+                      type="text"
+                      id={"subTaskAdd" + todo.id}
+                      fullWidth
+                      sx={{ textAlign: "right", width: "100%" }} // 调整文本框样式
+                    />
+                  </Grid>
+                  <Grid item xs={3} align="right">
+                    <ColorButton
+                      variant="contained"
+                      fullWidth
+                      inputProps={{ padding: "10px", maxWidth: "100%" }}
+                      type="submit"
+                    >
+                      Add Work
+                    </ColorButton>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <SubList
+                      subTasks={subTasks}
+                      todoEditing={todoEditing}
+                      toggleSubTaskComplete={toggleSubTaskComplete}
+                      submitSubTaskEdit={submitSubTaskEdit}
+                      setTodoEditing={setTodoEditing}
+                      deleteSubTask={deleteSubTask}
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
               </form>
-
-              <SubList
-                subTasks={subTasks}
-                todoEditing={todoEditing}
-                toggleSubTaskComplete={toggleSubTaskComplete}
-                submitSubTaskEdit={submitSubTaskEdit}
-                setTodoEditing={setTodoEditing}
-                deleteSubTask={deleteSubTask}
-              />
             </Collapse>
-          </Grid>
-          <Grid
-            item
-            xs={4}
-            align="right"
-            padding={2}
-            marginLeft={10}
-            justifyContent="center"
-          >
-            {todo.id === todoEditing ? (
-              <Button sx={buttonStyle} onClick={() => submitEdits(todo)}>
-                Submit Edits
-              </Button>
-            ) : (
-              <Button
-                sx={buttonStyle}
-                variant="contained"
-                onClick={() => setTodoEditing(todo.id)}
-              >
-                Edit
-              </Button>
-            )}
-            <Button
-              sx={buttonStyle}
-              variant="contained"
-              style={{ backgroundColor: "red", color: "white" }}
-              onClick={() => deleteTodo(todo.id)}
-            >
-              Delete
-            </Button>
           </Grid>
         </Grid>
       ))}

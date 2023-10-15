@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Button from "@mui/material/Button";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { Box, Checkbox, Collapse,CardContent, Container, ListItem } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { useTodos } from "./TodoService";
-import SubList from "./SubList"; // 导入 SubList 组件
 import ListEntity from "./ListEntity"
+import ColorButton from "./ColorButton";
+import DeleteButton from "./DeleteButton";
 
 const App = () => {
 
@@ -25,7 +23,6 @@ const App = () => {
     handleSubTaskEdit,
     handleDeleteParentTask,
     handleDeleteSubTask,
-    setTodos,
     setSubTasks,
     setTodoEditing
   } = useTodos();
@@ -100,15 +97,22 @@ const App = () => {
 
 
 return (
-  <Grid container spacing={2} id="todo-list" style={{ maxWidth: "80%" }}>
-    <Grid item xs={12} justifyContent="center">
+  <Grid
+    container
+    spacing={1}
+    id="todo-list"
+    justifyContent="center"
+    alignItems="center"
+    style={{ minHeight: "100vh" }}
+    padding={40}
+    border={1}
+  >
+    <Grid item xs={12} justifyContent="center" >
       <Typography
         variant="h3"
         align="center"
-        fontFamily="Times New Roman"
-        marginTop={10}
-        gutterBottom
-        fullWidth
+        style={{ fontWeight: 600 }}
+        marginBottom={12}
       >
         Work Logger
       </Typography>
@@ -125,14 +129,14 @@ return (
             />
           </Grid>
           <Grid item xs={2}>
-            <Button
+            <ColorButton
               variant="contained"
               fullWidth
               inputProps={{ padding: "10px", maxWidth: "100%" }}
               type="submit"
             >
               Add Work
-            </Button>
+            </ColorButton>
           </Grid>
         </Grid>
       </form>
