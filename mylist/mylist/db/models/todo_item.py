@@ -9,6 +9,7 @@ class TodoItem(Base):
     title = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
     is_completed = Column(Boolean, default=False)
+    is_important = Column(Boolean, default=False)
     parent_task_id = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now())

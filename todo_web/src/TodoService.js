@@ -6,7 +6,8 @@ import {
     addSubTask,
     deleteTask,
     toggleTaskComplete,
-    editTask
+    editTask,
+    toggleStar
 } from "./api";
 
 export const useTodos = () => {
@@ -77,6 +78,22 @@ export const useTodos = () => {
           return todo;
         });
           
+        setTodos(updatedTodos);
+      } catch (error) {
+        console.error("Error updating todo:", error);
+      }
+    };
+
+    const handleToggleParentTaskStar = async (id) => {
+      try {
+        const data = await toggleStar(todos, id);
+        const updatedTodos = todos.map((todo) => {
+          if (todo.id === id) {
+            return data;
+          }
+          return todo;
+        });
+
         setTodos(updatedTodos);
       } catch (error) {
         console.error("Error updating todo:", error);
@@ -157,5 +174,6 @@ export const useTodos = () => {
       setTodos,
       setSubTasks,
       setTodoEditing,
+      handleToggleParentTaskStar
     };
 };

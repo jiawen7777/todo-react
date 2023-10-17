@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { useTodos } from "./TodoService";
 import ListEntity from "./ListEntity";
@@ -21,6 +20,7 @@ const TaskList = () => {
     handleDeleteSubTask,
     setSubTasks,
     setTodoEditing,
+    handleToggleParentTaskStar
   } = useTodos();
 
   const handleSubmit = async (e) => {
@@ -75,6 +75,10 @@ const TaskList = () => {
   async function toggleSubTaskComplete(id) {
     handleToggleSubTaskComplete(id);
   }
+    
+    async function toggleStar(id) {
+        handleToggleParentTaskStar(id);
+}
 
   async function submitEdits(currentTask) {
     const updatedText = document.getElementById(currentTask.id).value;
@@ -92,21 +96,9 @@ return (
     spacing={4}
     id="todo-list"
     style={{ minHeight: "100vh" }}
-    padding={40}
-    border={1}
+    padding={10}
     backgroundColor="#eeeeee"
   >
-    <Grid item xs={12} justifyContent="center">
-      <Typography
-        variant="h3"
-        align="center"
-        style={{ fontWeight: 400 }}
-        marginBottom={12}
-      >
-        To Do
-      </Typography>
-    </Grid>
-
     <ListEntity
       todos={todos}
       todoEditing={todoEditing}
@@ -125,6 +117,7 @@ return (
       toggleSubTaskComplete={toggleSubTaskComplete}
       handleSubmit={handleSubmit}
       handleAddParentTask={handleAddParentTask}
+      toggleStar={toggleStar}
     />
   </Grid>
 );

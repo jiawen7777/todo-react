@@ -3,13 +3,14 @@ import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import SubList from "./SubList";
-import { Collapse } from "@mui/material";
+import { Button, Collapse, IconButton } from "@mui/material";
 import ColorButton from "./ColorButton";
 import DeleteButton from "./DeleteButton";
 import "./style.css";
 import { useRef } from "react";
 import ColorSelect from "./ColorSelect";
-
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import StarIcon from "@mui/icons-material/Star";
 function TodoList({
   todos,
   todoEditing,
@@ -28,6 +29,7 @@ function TodoList({
   toggleSubTaskComplete,
   handleSubmit,
   handleAddParentTask,
+  toggleStar,
 }) {
   const gridRef = useRef(null);
 
@@ -73,7 +75,7 @@ function TodoList({
 
   return (
     <Grid container>
-      <Grid container className="custom-grid-item" >
+      <Grid container className="custom-grid-item">
         <Grid item xs={10}>
           <TextField
             type="text"
@@ -100,16 +102,24 @@ function TodoList({
             }}
             ref={gridRef}
             className="custom-grid-item"
-            onClick={(event) => {
-              // 当事件的目标是 Grid 本身时，执行你的 onClick 逻辑
-              console.log("Grid clicked");
-              setExpandedItem(expandedItem === todo.id ? null : todo.id);
-              setSubTasks([]);
-              fetchSubTasks(todo.id);
-            }}
           >
-            <Grid item xs={10}>
+            <Grid item xs={9}>
               <Grid container spacing={1}>
+                <Grid item xs={1}>
+                  <ColorButton
+                    onClick={(event) => {
+                      // 当事件的目标是 Grid 本身时，执行你的 onClick 逻辑
+                      console.log("Grid clicked");
+                      setExpandedItem(
+                        expandedItem === todo.id ? null : todo.id
+                      );
+                      setSubTasks([]);
+                      fetchSubTasks(todo.id);
+                    }}
+                  >
+                    ·
+                  </ColorButton>
+                </Grid>
                 <Grid item xs={2}>
                   <Checkbox
                     id="is_completed"
@@ -117,7 +127,7 @@ function TodoList({
                     onChange={() => toggleComplete(todo.id)}
                   />
                 </Grid>
-                <Grid item xs={10}>
+                <Grid item xs={8}>
                   {todo.id === todoEditing ? (
                     <TextField
                       type="text"
@@ -149,6 +159,11 @@ function TodoList({
               >
                 Delete
               </DeleteButton>
+            </Grid>
+            <Grid item xs={1}>
+              <IconButton onClick={() => toggleStar(todo.id)}>
+                {todo.is_important ? <StarIcon /> : <StarBorderIcon />}
+              </IconButton>
             </Grid>
             <Grid
               item

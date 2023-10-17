@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
-import ColorLensIcon from "@mui/icons-material/ColorLens";
 import CircleIcon from "@mui/icons-material/Circle";
 import { Grid } from "@mui/material";
 

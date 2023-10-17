@@ -26,7 +26,8 @@ export const addTask = async (title) => {
   try {
     const response = await axios.post(`${API_URL}/todos`, {
       title: title,
-      is_completed: false,
+        is_completed: false,
+      is_important: false
     });
     return response.data;
   } catch (error) {
@@ -39,7 +40,8 @@ export const addSubTask = async (title, id) => {
   try {
     const response = await axios.post(`${API_URL}/todos/${id}`, {
       title: title,
-      is_completed: false,
+        is_completed: false,
+      is_important: false
     });
     return response.data;
   } catch (error) {
@@ -62,6 +64,7 @@ export const toggleTaskComplete = async (tasks, id) => {
         const response = await axios.put(`${API_URL}/todos/${id}`, {
           is_completed: !tasks.find((todo) => todo.id === id).is_completed,
           title: tasks.find((todo) => todo.id === id).title,
+          is_important: tasks.find((todo) => todo.id === id).is_important
         });
         return response.data;
     } catch (error) {
@@ -70,11 +73,26 @@ export const toggleTaskComplete = async (tasks, id) => {
     }
 }
 
+export const toggleStar = async (tasks, id) => {
+    try {
+      const response = await axios.put(`${API_URL}/todos/${id}`, {
+        is_completed: tasks.find((todo) => todo.id === id).is_completed,
+        title: tasks.find((todo) => todo.id === id).title,
+        is_important: !tasks.find((todo) => todo.id === id).is_important
+      });
+        return response.data;
+    } catch (error) {
+      console.error("Error staring", error);
+      throw error;
+    }
+}
+
 export const editTask = async (editedText, todo) => {
     try {
         const response = await axios.put(`${API_URL}/todos/${todo.id}`, {
           title: editedText,
-          is_completed: todo.is_completed,
+            is_completed: todo.is_completed,
+          is_important: todo.is_important
         });
         return response.data;
     } catch (error) {
@@ -82,3 +100,5 @@ export const editTask = async (editedText, todo) => {
         throw error;
     }
 }
+
+
