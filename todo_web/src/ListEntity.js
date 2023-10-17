@@ -8,6 +8,8 @@ import ColorButton from "./ColorButton";
 import DeleteButton from "./DeleteButton";
 import "./style.css";
 import { useRef } from "react";
+import ColorSelect from "./ColorSelect";
+
 function TodoList({
   todos,
   todoEditing,
@@ -25,8 +27,8 @@ function TodoList({
   subTasks,
   toggleSubTaskComplete,
   handleSubmit,
+  handleAddParentTask,
 }) {
-
   const gridRef = useRef(null);
 
   const handleTaskClick = (task) => {
@@ -50,38 +52,47 @@ function TodoList({
       }
     }
   };
+
+  const handleAddWorkEnter = async (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const todoText = document.getElementById("todoAdd").value.trim();
+
+      if (todoText.length > 0) {
+        try {
+          await handleAddParentTask(todoText); // 使用 handleAddTodo 函数
+          document.getElementById("todoAdd").value = "";
+        } catch (error) {
+          console.error("Error adding todo:", error);
+        }
+      } else {
+        alert("Enter a valid task");
+      }
+    }
+  };
+
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} className="custom-grid-item">
-        <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
-            <Grid item xs={10}>
-              <TextField
-                type="text"
-                id="todoAdd"
-                label="Add a task"
-                fullWidth
-                inputProps={{ style: { textAlign: "left", padding: "10px" } }}
-              />
-            </Grid>
-            <Grid item xs={2}>
-              <ColorButton
-                variant="outlined"
-                inputProps={{ marginLeft: "10px", maxWidth: "100%" }}
-                type="submit"
-                fullWidth
-              >
-                Add Work
-              </ColorButton>
-            </Grid>
-          </Grid>
-        </form>
+    <Grid container>
+      <Grid container className="custom-grid-item" >
+        <Grid item xs={10}>
+          <TextField
+            type="text"
+            id="todoAdd"
+            label="Add a task"
+            fullWidth
+            variant="standard"
+            onKeyDown={(event) => handleAddWorkEnter(event)}
+          />
+        </Grid>
+        <Grid item xs={1} marginLeft={1}>
+          <ColorSelect></ColorSelect>
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
+
+      <Grid item xs={12} marginTop={2}>
         {todos.map((todo) => (
           <Grid
             container
-            spacing={2}
             key={todo.id}
             style={{
               backgroundColor: todo.is_completed ? "#f2f2f2" : "#ffffff",
@@ -114,7 +125,7 @@ function TodoList({
                       defaultValue={todo.title}
                       fullWidth
                       onBlur={() => handleTaskBlur(todo)}
-                      onKeyDown={(event) => handleEnter(event,todo)}
+                      onKeyDown={(event) => handleEnter(event, todo)}
                     />
                   ) : (
                     <div
@@ -139,7 +150,12 @@ function TodoList({
                 Delete
               </DeleteButton>
             </Grid>
-            <Grid item xs={12} justifyContent={"right"}>
+            <Grid
+              item
+              xs={12}
+              justifyContent={"right"}
+              hidden={expandedItem !== todo.id}
+            >
               <Collapse
                 in={expandedItem === todo.id}
                 onClick={(event) => {
@@ -151,26 +167,12 @@ function TodoList({
                 <form onSubmit={(event) => handleSubmitSubTask(event, todo.id)}>
                   <Grid container>
                     <Grid item xs={12}>
-                      <Grid container>
-                        <Grid item xs={10}>
-                          <TextField
-                            type="text"
-                            id={"subTaskAdd" + todo.id}
-                            sx={{ textAlign: "right", width: "100%" }} // 调整文本框样式
-                            label="Add a sub task"
-                          />
-                        </Grid>
-                        <Grid item xs={2}>
-                          <ColorButton
-                            variant="outlined"
-                            inputProps={{ padding: "10px", maxWidth: "100%" }}
-                            type="submit"
-                            fullWidth
-                          >
-                            Add Subtask
-                          </ColorButton>
-                        </Grid>
-                      </Grid>
+                      <TextField
+                        type="text"
+                        id={"subTaskAdd" + todo.id}
+                        sx={{ textAlign: "right", width: "100%" }} // 调整文本框样式
+                        label="Add a sub task"
+                      />
                     </Grid>
                     <Grid item xs={12}>
                       <SubList

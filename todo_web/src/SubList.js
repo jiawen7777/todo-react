@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Checkbox, TextField, Grid } from "@mui/material";
 import DeleteButton from "./DeleteButton";
-
+import CloseIcon from "@mui/icons-material/Close";
 const SubList = ({
   subTasks,
   toggleSubTaskComplete,
@@ -35,7 +35,7 @@ const SubList = ({
   return (
     <Grid container>
       {subTasks.map((subTask) => (
-        <Grid container key={subTask.id} marginTop={3}>
+        <Grid container key={subTask.id} className="subtask-grid-item">
           {/* complete checkbox */}
           <Grid item xs={2}>
             <Checkbox
@@ -69,9 +69,7 @@ const SubList = ({
             )}
           </Grid>
           <Grid item xs={2}>
-            <DeleteButton onClick={() => deleteSubTask(subTask.id)}>
-              Delete
-            </DeleteButton>
+            <CloseIcon onClick={() => deleteSubTask(subTask.id)} />
           </Grid>
         </Grid>
       ))}

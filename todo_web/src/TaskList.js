@@ -87,47 +87,47 @@ const TaskList = () => {
   }
 
 return (
-    <Grid
+  <Grid
     container
     spacing={4}
     id="todo-list"
     style={{ minHeight: "100vh" }}
     padding={40}
-        border={1}
-        backgroundColor="#eeeeee"
->
+    border={1}
+    backgroundColor="#eeeeee"
+  >
     <Grid item xs={12} justifyContent="center">
-    <Typography
+      <Typography
         variant="h3"
         align="center"
         style={{ fontWeight: 400 }}
         marginBottom={12}
-    >
+      >
         To Do
-    </Typography>
+      </Typography>
     </Grid>
-    
 
     <ListEntity
-    todos={todos}
-    todoEditing={todoEditing}
-    toggleComplete={toggleComplete}
-    setExpandedItem={setExpandedItem}
-    setSubTasks={setSubTasks}
-    fetchSubTasks={fetchSubTasks}
-    handleSubmitSubTask={handleSubmitSubTask}
-    submitSubTaskEdit={submitSubTaskEdit}
-    deleteSubTask={deleteSubTask}
-    setTodoEditing={setTodoEditing}
-    submitEdits={submitEdits}
-    deleteTodo={deleteTodo}
-    expandedItem={expandedItem}
-    subTasks={subTasks}
-    toggleSubTaskComplete={toggleSubTaskComplete}
-    handleSubmit={handleSubmit}
+      todos={todos}
+      todoEditing={todoEditing}
+      toggleComplete={toggleComplete}
+      setExpandedItem={setExpandedItem}
+      setSubTasks={setSubTasks}
+      fetchSubTasks={fetchSubTasks}
+      handleSubmitSubTask={handleSubmitSubTask}
+      submitSubTaskEdit={submitSubTaskEdit}
+      deleteSubTask={deleteSubTask}
+      setTodoEditing={setTodoEditing}
+      submitEdits={submitEdits}
+      deleteTodo={deleteTodo}
+      expandedItem={expandedItem}
+      subTasks={subTasks}
+      toggleSubTaskComplete={toggleSubTaskComplete}
+      handleSubmit={handleSubmit}
+      handleAddParentTask={handleAddParentTask}
     />
-    </Grid>
-  );
+  </Grid>
+);
 };
 
 export default TaskList;

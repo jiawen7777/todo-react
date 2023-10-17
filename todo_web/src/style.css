@@ -8,9 +8,17 @@
 .custom-grid-item {
   border-radius: 5px; /* 设置圆角 */
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2); /* 设置阴影 */
-  padding: 10px; /* 设置内边距 */
-  margin: 10px; /* 设置外边距 */
+  margin: 1px; /* 设置外边距 */
   background-color: #ffffff;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: 4px;
+  padding: 10px;
+}
+
+.subtask-grid-item {
+  border-radius: 5px; /* 设置圆角 */
+  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.2); /* 设置阴影 */
+  background-color: #fffdfd;
+  margin-top: 2px;
+  padding: 3px;
+  padding-left: 20px;
 }
