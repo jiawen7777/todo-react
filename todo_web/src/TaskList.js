@@ -1,27 +1,30 @@
 import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
-import { useTodos } from "./TodoService";
+import { todoService } from "./TodoService"
 import ListEntity from "./ListEntity";
 
 const TaskList = () => {
   const [expandedItem, setExpandedItem] = useState(null);
-  const {
-    todos,
-    subTasks,
-    todoEditing,
-    handleAddParentTask,
-    handleAddSubTask,
-    handleFetchAllSubTasks,
-    handleToggleSubTaskComplete,
-    handleToggleParentTaskComplete,
-    handleParentTaskEdit,
-    handleSubTaskEdit,
-    handleDeleteParentTask,
-    handleDeleteSubTask,
-    setSubTasks,
-    setTodoEditing,
-    handleToggleParentTaskStar
-  } = useTodos();
+  
+    
+    const {
+      todos,
+      subTasks,
+      todoEditing,
+      setTodos,
+      setSubTasks,
+      setTodoEditing,
+      handleAddParentTask,
+      handleAddSubTask,
+      handleFetchAllSubTasks,
+      handleToggleSubTaskComplete,
+      handleToggleParentTaskComplete,
+      handleParentTaskEdit,
+      handleSubTaskEdit,
+      handleDeleteParentTask,
+      handleDeleteSubTask,
+      handleToggleParentTaskStar,
+    } = todoService();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
