@@ -3,35 +3,76 @@ import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import SubList from "./SubList";
-import { Button, Collapse, IconButton } from "@mui/material";
+import { Collapse, IconButton } from "@mui/material";
 import ColorButton from "./ColorButton";
 import DeleteButton from "./DeleteButton";
+import { useState } from "react";
 import "./style.css";
 import { useRef } from "react";
 import ColorSelect from "./ColorSelect";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
-function TodoList({
-  todos,
-  todoEditing,
-  toggleComplete,
-  setExpandedItem,
-  setSubTasks,
-  fetchSubTasks,
-  handleSubmitSubTask,
-  submitSubTaskEdit,
-  deleteSubTask,
-  setTodoEditing,
-  submitEdits,
-  deleteTodo,
-  expandedItem,
-  subTasks,
-  toggleSubTaskComplete,
-  handleSubmit,
-  handleAddParentTask,
-  toggleStar,
-}) {
+import { todoService } from "./TodoService";
+
+function TodoList() {
   const gridRef = useRef(null);
+  const [expandedItem, setExpandedItem] = useState(null);
+
+  async function handleSubmitSubTask(e, id) {
+    e.preventDefault();
+    const subTaskAddId = "subTaskAdd" + id;
+    const todoText = document.getElementById(subTaskAddId).value.trim();
+    console.log(todoText);
+    if (todoText.length > 0) {
+      try {
+        handleAddSubTask(todoText, id);
+        document.getElementById(subTaskAddId).value = "";
+      } catch (error) {
+        console.error("Error adding todo:", error);
+      }
+    } else {
+      alert("Enter a valid task");
+    }
+  }
+
+  async function deleteTodo(id) {
+    handleDeleteParentTask(id);
+  }
+
+  async function fetchSubTasks(id) {
+    handleFetchAllSubTasks(id);
+  }
+
+  async function toggleComplete(id) {
+    handleToggleParentTaskComplete(id);
+  }
+
+  async function toggleStar(id) {
+    handleToggleParentTaskStar(id);
+  }
+
+  async function submitEdits(currentTask) {
+    const updatedText = document.getElementById(currentTask.id).value;
+    handleParentTaskEdit(updatedText, currentTask);
+  }
+
+  const {
+    todos,
+    subTasks,
+    todoEditing,
+    setSubTasks,
+    setTodoEditing,
+    handleAddParentTask,
+    handleFetchAllSubTasks,
+    handleToggleParentTaskComplete,
+    handleParentTaskEdit,
+    handleDeleteParentTask,
+    handleToggleParentTaskStar,
+    handleAddSubTask,
+    handleToggleSubTaskComplete,
+    handleSubTaskEdit,
+    handleDeleteSubTask,
+  } = todoService();
 
   const handleTaskClick = (task) => {
     if (task.id !== todoEditing) {
@@ -75,22 +116,18 @@ function TodoList({
 
   return (
     <Grid container>
-      <Grid container className="custom-grid-item">
-        <Grid item xs={10}>
-          <TextField
-            type="text"
-            id="todoAdd"
-            label="Add a task"
-            fullWidth
-            variant="standard"
-            onKeyDown={(event) => handleAddWorkEnter(event)}
-          />
-        </Grid>
-        <Grid item xs={1} marginLeft={1}>
-          <ColorSelect></ColorSelect>
-        </Grid>
+      <Grid item xs={12}>
+        <TextField
+          type="text"
+          id="todoAdd"
+          label="Add a task"
+          fullWidth
+          variant="standard"
+          className="custom-grid-item"
+          style={{padding:10, paddingLeft:20}}
+          onKeyDown={(event) => handleAddWorkEnter(event)}
+        />
       </Grid>
-
       <Grid item xs={12} marginTop={2}>
         {todos.map((todo) => (
           <Grid
@@ -172,6 +209,7 @@ function TodoList({
               hidden={expandedItem !== todo.id}
             >
               <Collapse
+                // TODO: wrap subtask component
                 in={expandedItem === todo.id}
                 onClick={(event) => {
                   // 阻止事件冒泡以防止触发折叠
@@ -192,11 +230,11 @@ function TodoList({
                     <Grid item xs={12}>
                       <SubList
                         subTasks={subTasks}
-                        todoEditing={todoEditing}
-                        toggleSubTaskComplete={toggleSubTaskComplete}
-                        submitSubTaskEdit={submitSubTaskEdit}
-                        setTodoEditing={setTodoEditing}
-                        deleteSubTask={deleteSubTask}
+                        handleToggleSubTaskComplete={
+                          handleToggleSubTaskComplete
+                        }
+                        handleSubTaskEdit={handleSubTaskEdit}
+                        handleDeleteSubTask={handleDeleteSubTask}
                       />
                     </Grid>
                   </Grid>

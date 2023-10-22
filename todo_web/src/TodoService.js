@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
 import {
-  fetchParentTasks,
   fetchSubTasks,
   addTask,
   addSubTask,
@@ -153,22 +151,22 @@ export const todoService = () => {
     }
   };
 
-    return {
-      todos,
-      subTasks,
-      todoEditing,
-      setTodos,
-      setSubTasks,
-      setTodoEditing,
-      handleAddParentTask,
-      handleAddSubTask,
-      handleFetchAllSubTasks,
-      handleToggleSubTaskComplete,
-      handleToggleParentTaskComplete,
-      handleParentTaskEdit,
-      handleSubTaskEdit,
-      handleDeleteParentTask,
-      handleDeleteSubTask,
-      handleToggleParentTaskStar,
-    };
+  return {
+    todos,
+    subTasks,
+    todoEditing,
+    setTodos,
+    setSubTasks,
+    setTodoEditing,
+    handleAddParentTask,
+    handleAddSubTask,
+    handleFetchAllSubTasks,
+    handleToggleSubTaskComplete,
+    handleToggleParentTaskComplete,
+    handleParentTaskEdit,
+    handleSubTaskEdit,
+    handleDeleteParentTask,
+    handleDeleteSubTask,
+    handleToggleParentTaskStar,
+  };
 };

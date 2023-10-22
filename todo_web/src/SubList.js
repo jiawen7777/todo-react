@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Checkbox, TextField, Grid } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+
 const SubList = ({
   subTasks,
-  toggleSubTaskComplete,
-  submitSubTaskEdit,
-  deleteSubTask,
+  handleToggleSubTaskComplete,
+  handleSubTaskEdit,
+  handleDeleteSubTask,
 }) => {
   const [editingSubTask, setEditingSubTask] = useState(null);
 
@@ -30,6 +31,19 @@ const SubList = ({
       }
     }
   };
+
+  async function deleteSubTask(id) {
+    handleDeleteSubTask(id);
+  }
+
+  async function toggleSubTaskComplete(id) {
+    handleToggleSubTaskComplete(id);
+  }
+
+  async function submitSubTaskEdit(currentSubTask) {
+    const updatedText = document.getElementById(currentSubTask.id).value;
+    handleSubTaskEdit(updatedText, currentSubTask);
+  }
 
   return (
     <Grid container>
