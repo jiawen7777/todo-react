@@ -176,7 +176,7 @@ export default function MiniDrawer() {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, pt: 8, pr: 3, pb: 3, pl: 3 }}>
         <DrawerHeader />
         {selectedPage === "My Day" && <MyDayContent />}
         {selectedPage === "Important" && <ImportantContent />}

@@ -9,6 +9,7 @@ const DeleteButton = styled(Button)(({ theme }) => ({
     backgroundColor: deepOrange[400],
   },
   borderColor: deepOrange[400],
+  height: 50,
   margin: 5,
 }));
 

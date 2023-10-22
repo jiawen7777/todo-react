@@ -2,32 +2,33 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8000/api"; // Replace with your backend URL
 
-export const fetchParentTasks = async () => {
-    try {
-    const response = await axios.get(`${API_URL}/todos`);
-        return response.data.data;
-    } catch (error) {
+export const fetchParentTasks = async (category) => {
+  try {
+    const response = await axios.get(`${API_URL}/todos?category=${category}`);
+    return response.data.data;
+  } catch (error) {
     console.error("Error fetching todos:", error);
-        throw error;
-    }
+    throw error;
+  }
 };
 
 export const fetchSubTasks = async (id) => {
-    try {
-        const response = await axios.get(`${API_URL}/todos/${id}`);
-        return response.data.data;
-        } catch (error) {
-        console.error("Error fetching todos:", error);
-        throw error;
-    }
+  try {
+    const response = await axios.get(`${API_URL}/todos/${id}`);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    throw error;
+  }
 };
 
-export const addTask = async (title) => {
+export const addTask = async (title, category = "todo") => {
   try {
     const response = await axios.post(`${API_URL}/todos`, {
       title: title,
-        is_completed: false,
-      is_important: false
+      is_completed: false,
+      is_important: category === "important",
+      is_today_task: category === "myday",
     });
     return response.data;
   } catch (error) {
@@ -40,8 +41,9 @@ export const addSubTask = async (title, id) => {
   try {
     const response = await axios.post(`${API_URL}/todos/${id}`, {
       title: title,
-        is_completed: false,
-      is_important: false
+      is_completed: false,
+      is_important: false,
+      is_today_task: false
     });
     return response.data;
   } catch (error) {
@@ -60,45 +62,60 @@ export const deleteTask = async (id) => {
 };
 
 export const toggleTaskComplete = async (tasks, id) => {
-    try {
-        const response = await axios.put(`${API_URL}/todos/${id}`, {
-          is_completed: !tasks.find((todo) => todo.id === id).is_completed,
-          title: tasks.find((todo) => todo.id === id).title,
-          is_important: tasks.find((todo) => todo.id === id).is_important
-        });
-        return response.data;
-    } catch (error) {
-      console.error("Error when toggling todo completion status:", error);
-      throw error;
-    }
-}
+  try {
+    const response = await axios.put(`${API_URL}/todos/${id}`, {
+      is_completed: !tasks.find((todo) => todo.id === id).is_completed,
+      title: tasks.find((todo) => todo.id === id).title,
+      is_important: tasks.find((todo) => todo.id === id).is_important,
+      is_today_task: tasks.find((todo) => todo.id === id).is_today_task,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error when toggling todo completion status:", error);
+    throw error;
+  }
+};
 
 export const toggleStar = async (tasks, id) => {
-    try {
-      const response = await axios.put(`${API_URL}/todos/${id}`, {
-        is_completed: tasks.find((todo) => todo.id === id).is_completed,
-        title: tasks.find((todo) => todo.id === id).title,
-        is_important: !tasks.find((todo) => todo.id === id).is_important
-      });
-        return response.data;
-    } catch (error) {
-      console.error("Error staring", error);
-      throw error;
-    }
-}
+  try {
+    const response = await axios.put(`${API_URL}/todos/${id}`, {
+      id: id,
+      is_completed: tasks.find((todo) => todo.id === id).is_completed,
+      title: tasks.find((todo) => todo.id === id).title,
+      is_important: !tasks.find((todo) => todo.id === id).is_important,
+      is_today_task: tasks.find((todo) => todo.id === id).is_today_task,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error staring", error);
+    throw error;
+  }
+};
 
 export const editTask = async (editedText, todo) => {
-    try {
-        const response = await axios.put(`${API_URL}/todos/${todo.id}`, {
-          title: editedText,
-            is_completed: todo.is_completed,
-          is_important: todo.is_important
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Error when toggling todo completion status:", error);
-        throw error;
-    }
-}
+  try {
+    const response = await axios.put(`${API_URL}/todos/${todo.id}`, {
+      id: todo.id,
+      title: editedText,
+      is_completed: todo.is_completed,
+      is_important: todo.is_important,
+      is_today_task: todo.is_today_task,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error when toggling todo completion status:", error);
+    throw error;
+  }
+};
 
-
+export const toggleMyDay = async (tasks, id) => {
+  try {
+    const response = await axios.put(`${API_URL}/todos/myday/${id}`, {
+      is_today_task: !tasks.find((todo) => todo.id === id).is_today_task,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error staring", error);
+    throw error;
+  }
+};

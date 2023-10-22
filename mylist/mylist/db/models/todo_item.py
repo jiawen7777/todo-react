@@ -11,5 +11,6 @@ class TodoItem(Base):
     is_completed = Column(Boolean, default=False)
     is_important = Column(Boolean, default=False)
     parent_task_id = Column(Integer, nullable=True)
+    marked_my_day_time = Column(DateTime(timezone=True))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now())

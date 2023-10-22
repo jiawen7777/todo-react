@@ -6,11 +6,12 @@ import {
   toggleTaskComplete,
   editTask,
   toggleStar,
+  toggleMyDay,
 } from "./api";
 
 import { useTodos } from "./hooks/useTodos.js";
 
-export const todoService = () => {
+export const todoService = ({ category }) => {
   // when loading all tasks
   const {
     todos,
@@ -19,11 +20,11 @@ export const todoService = () => {
     setTodos,
     setSubTasks,
     setTodoEditing,
-  } = useTodos();
+  } = useTodos({ category });
 
   // create a parent task
-  const handleAddParentTask = async (title) => {
-    const newTodo = await addTask(title);
+  const handleAddParentTask = async (title, category) => {
+    const newTodo = await addTask(title, category);
     setTodos([...todos, newTodo]);
   };
 
@@ -151,6 +152,22 @@ export const todoService = () => {
     }
   };
 
+  const handleToggleMyDay = async (id) => {
+    try {
+      const data = await toggleMyDay(todos, id);
+      const updatedTodos = todos.map((todo) => {
+        if (todo.id === id) {
+          return data;
+        }
+        return todo;
+      });
+
+      setTodos(updatedTodos);
+    } catch (error) {
+      console.error("Error adding to MyDay :", error);
+    }
+  };
+
   return {
     todos,
     subTasks,
@@ -168,5 +185,6 @@ export const todoService = () => {
     handleDeleteParentTask,
     handleDeleteSubTask,
     handleToggleParentTaskStar,
+    handleToggleMyDay,
   };
 };

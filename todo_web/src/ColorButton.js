@@ -8,7 +8,9 @@ const ColorButton = styled(Button)(({ theme }) => ({
     backgroundColor: orange[500],
   },
   borderColor: orange[500],
+  height: 50,
   margin: 5,
+  fontSize: "12px", // 使用clamp函数调整字体大小
 }));
 
 export default ColorButton;

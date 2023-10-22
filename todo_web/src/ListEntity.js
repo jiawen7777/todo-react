@@ -2,6 +2,7 @@ import React from "react";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
+import { Box } from "@mui/material";
 import SubList from "./SubList";
 import { Collapse, IconButton } from "@mui/material";
 import ColorButton from "./ColorButton";
@@ -13,10 +14,34 @@ import ColorSelect from "./ColorSelect";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
 import { todoService } from "./TodoService";
+import { Drawer, ThemeProvider, createTheme } from "@mui/material";
 
-function TodoList() {
+function TodoList({ category }) {
   const gridRef = useRef(null);
   const [expandedItem, setExpandedItem] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+
+  const theme = createTheme({
+    components: {
+      MuiBackdrop: {
+        styleOverrides: {
+          root: {
+            backgroundColor: "rgba(0, 0, 0, 0.3)", // 调整透明度为0.3
+          },
+        },
+      },
+    },
+  });
 
   async function handleSubmitSubTask(e, id) {
     e.preventDefault();
@@ -37,6 +62,10 @@ function TodoList() {
 
   async function deleteTodo(id) {
     handleDeleteParentTask(id);
+  }
+
+  async function toggleMyDay(id) {
+    handleToggleMyDay(id);
   }
 
   async function fetchSubTasks(id) {
@@ -72,7 +101,8 @@ function TodoList() {
     handleToggleSubTaskComplete,
     handleSubTaskEdit,
     handleDeleteSubTask,
-  } = todoService();
+    handleToggleMyDay,
+  } = todoService({ category });
 
   const handleTaskClick = (task) => {
     if (task.id !== todoEditing) {
@@ -103,7 +133,7 @@ function TodoList() {
 
       if (todoText.length > 0) {
         try {
-          await handleAddParentTask(todoText); // 使用 handleAddTodo 函数
+          await handleAddParentTask(todoText, category); // 使用 handleAddTodo 函数
           document.getElementById("todoAdd").value = "";
         } catch (error) {
           console.error("Error adding todo:", error);
@@ -124,7 +154,7 @@ function TodoList() {
           fullWidth
           variant="standard"
           className="custom-grid-item"
-          style={{padding:10, paddingLeft:20}}
+          style={{ padding: 10, paddingLeft: 20 }}
           onKeyDown={(event) => handleAddWorkEnter(event)}
         />
       </Grid>
@@ -152,6 +182,7 @@ function TodoList() {
                       );
                       setSubTasks([]);
                       fetchSubTasks(todo.id);
+                      toggleDrawer(true)(event);
                     }}
                   >
                     ·
@@ -189,7 +220,15 @@ function TodoList() {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={1}>
+              <ColorButton
+                variant="outlined"
+                onClick={() => toggleMyDay(todo.id)}
+              >
+                {todo.is_today_task ? "Remove from My Day" : "Add to My Day"}
+              </ColorButton>
+            </Grid>
+            <Grid item xs={1}>
               <DeleteButton
                 variant="outlined"
                 onClick={() => deleteTodo(todo.id)}
@@ -202,14 +241,48 @@ function TodoList() {
                 {todo.is_important ? <StarIcon /> : <StarBorderIcon />}
               </IconButton>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              justifyContent={"right"}
-              hidden={expandedItem !== todo.id}
-            >
-              <Collapse
-                // TODO: wrap subtask component
+
+            <ThemeProvider theme={theme}>
+              <Drawer
+                anchor="right"
+                open={drawerOpen}
+                onClose={toggleDrawer(false)}
+              >
+                <Box
+                  width="600px"
+                  maxHeight="800px"
+                  overflow="auto"
+                  padding="20"
+                >
+                  <form
+                    onSubmit={(event) => handleSubmitSubTask(event, todo.id)}
+                  >
+                    <Grid container>
+                      <Grid item xs={12} style={{ marginTop: 100 }}>
+                        <SubList
+                          subTasks={subTasks}
+                          handleToggleSubTaskComplete={
+                            handleToggleSubTaskComplete
+                          }
+                          handleSubTaskEdit={handleSubTaskEdit}
+                          handleDeleteSubTask={handleDeleteSubTask}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          type="text"
+                          id={"subTaskAdd" + todo.id}
+                          sx={{ textAlign: "right", width: "100%" }} // 调整文本框样式
+                          label="Add a sub task"
+                        />
+                      </Grid>
+                    </Grid>
+                  </form>
+                </Box>
+              </Drawer>
+            </ThemeProvider>
+
+            {/* <Collapse
                 in={expandedItem === todo.id}
                 onClick={(event) => {
                   // 阻止事件冒泡以防止触发折叠
@@ -220,14 +293,6 @@ function TodoList() {
                 <form onSubmit={(event) => handleSubmitSubTask(event, todo.id)}>
                   <Grid container>
                     <Grid item xs={12}>
-                      <TextField
-                        type="text"
-                        id={"subTaskAdd" + todo.id}
-                        sx={{ textAlign: "right", width: "100%" }} // 调整文本框样式
-                        label="Add a sub task"
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
                       <SubList
                         subTasks={subTasks}
                         handleToggleSubTaskComplete={
@@ -237,10 +302,17 @@ function TodoList() {
                         handleDeleteSubTask={handleDeleteSubTask}
                       />
                     </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        type="text"
+                        id={"subTaskAdd" + todo.id}
+                        sx={{ textAlign: "right", width: "100%" }} // 调整文本框样式
+                        label="Add a sub task"
+                      />
+                    </Grid>
                   </Grid>
                 </form>
-              </Collapse>
-            </Grid>
+              </Collapse> */}
           </Grid>
         ))}
       </Grid>
