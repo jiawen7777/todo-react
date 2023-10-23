@@ -4,13 +4,12 @@ import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import { Box } from "@mui/material";
 import SubList from "./SubList";
-import { Collapse, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import ColorButton from "./ColorButton";
 import DeleteButton from "./DeleteButton";
 import { useState } from "react";
 import "./style.css";
 import { useRef } from "react";
-import ColorSelect from "./ColorSelect";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
 import { todoService } from "./TodoService";
@@ -188,14 +187,14 @@ function TodoList({ category }) {
                     ·
                   </ColorButton>
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1}>
                   <Checkbox
                     id="is_completed"
                     checked={todo.is_completed}
                     onChange={() => toggleComplete(todo.id)}
                   />
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={10}>
                   {todo.id === todoEditing ? (
                     <TextField
                       type="text"
@@ -248,16 +247,11 @@ function TodoList({ category }) {
                 open={drawerOpen}
                 onClose={toggleDrawer(false)}
               >
-                <Box
-                  width="600px"
-                  maxHeight="800px"
-                  overflow="auto"
-                  padding="20"
-                >
+                <Box width="600px" maxHeight="800px" overflow="auto">
                   <form
                     onSubmit={(event) => handleSubmitSubTask(event, todo.id)}
                   >
-                    <Grid container>
+                    <Grid container style={{ padding: 20 }}>
                       <Grid item xs={12} style={{ marginTop: 100 }}>
                         <SubList
                           subTasks={subTasks}
