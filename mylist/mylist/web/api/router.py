@@ -1,8 +1,7 @@
 from fastapi.routing import APIRouter
 
-from mylist.web.api import echo, monitoring, test
+from mylist.web.api import todos, category
 
 api_router = APIRouter()
-api_router.include_router(monitoring.router)
-api_router.include_router(echo.router, prefix="/echo", tags=["echo"])
-api_router.include_router(test.router, tags=["test db"])
+api_router.include_router(todos.router, tags=["todos"])
+api_router.include_router(category.router, tags=["todo categories"])

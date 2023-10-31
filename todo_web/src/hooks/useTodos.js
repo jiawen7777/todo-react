@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchParentTasks } from "../api";
+import { fetchParentTasks } from "../apis/todos";
 
 export const useTodos = ({ category }) => {
   const [todos, setTodos] = useState([]);

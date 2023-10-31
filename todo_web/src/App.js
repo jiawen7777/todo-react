@@ -1,7 +1,9 @@
-import TaskList from "./TaskList";
-import MyDayContent from "./MyDayContent";
-import ImportantContent from "./ImportantContent";
-
+import TodoContent from "./components/TodoContent";
+import MyDayContent from "./components/MyDayContent";
+import ImportantContent from "./components/ImportantContent";
+import CustomisedContent from "./components/CustomisedContent";
+import SideList from "./components/SideList"
+import { categoryService } from "./services/CategoryService";
 import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -23,10 +25,9 @@ import ListItemText from "@mui/material/ListItemText";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import StarIcon from "@mui/icons-material/Star";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { Grid } from "@mui/material";
 
 const drawerWidth = 240;
-
-
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -96,7 +97,7 @@ const Drawer = styled(MuiDrawer, {
 export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [selectedPage, setSelectedPage] = React.useState("My Day");
+  const [selectedPage, setSelectedPage] = React.useState(1);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -109,6 +110,13 @@ export default function MiniDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const {
+    categories,
+    setCategories,
+    handleAddCategory,
+    handleCategoryEdit,
+  } = categoryService();
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -145,9 +153,9 @@ export default function MiniDrawer() {
         <Divider />
         <List>
           {[
-            { text: "My Day", icon: <AccessTimeIcon /> },
-            { text: "Important", icon: <StarIcon /> },
-            { text: "To Dos", icon: <CheckCircleIcon /> },
+            { pageId: 3, text: "My Day", icon: <AccessTimeIcon /> },
+            { pageId: 2, text: "Important", icon: <StarIcon /> },
+            { pageId: 1, text: "To-Do", icon: <CheckCircleIcon /> },
           ].map((item, index) => (
             <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
@@ -156,7 +164,7 @@ export default function MiniDrawer() {
                   justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
-                onClick={() => handlePageSelect(item.text)}
+                onClick={() => handlePageSelect(item.pageId)}
               >
                 <ListItemIcon
                   sx={{
@@ -175,12 +183,36 @@ export default function MiniDrawer() {
             </ListItem>
           ))}
         </List>
+
+        <Divider />
+        <Grid container marginTop={5}>
+          <Grid item xs={12}>
+            <SideList
+              categories={categories}
+              handleAddCategory={handleAddCategory}
+              setSelectedPage={setSelectedPage}
+            ></SideList>
+          </Grid>
+        </Grid>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, pt: 8, pr: 3, pb: 3, pl: 3 }}>
         <DrawerHeader />
-        {selectedPage === "My Day" && <MyDayContent />}
-        {selectedPage === "Important" && <ImportantContent />}
-        {selectedPage === "To Dos" && <TaskList />}
+        {selectedPage === 2 && <MyDayContent />}
+        {selectedPage === 3 && <ImportantContent />}
+        {selectedPage === 1 && <TodoContent category={1} />}
+
+        {categories.map(
+          (category) =>
+            selectedPage === category.id && (
+              <CustomisedContent
+                category_id={category.id}
+                category_name={category.category_name}
+                categories={categories}
+                setCategories={setCategories}
+                handleCategoryEdit={handleCategoryEdit}
+              />
+            )
+        )}
       </Box>
     </Box>
   );

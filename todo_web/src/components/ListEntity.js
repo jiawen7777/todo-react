@@ -5,14 +5,14 @@ import Grid from "@mui/material/Grid";
 import { Box } from "@mui/material";
 import SubList from "./SubList";
 import { IconButton } from "@mui/material";
-import ColorButton from "./ColorButton";
-import DeleteButton from "./DeleteButton";
+import ColorButton from "./buttons/ColorButton";
+import DeleteButton from "./buttons/DeleteButton";
 import { useState } from "react";
-import "./style.css";
+import "../css/style.css";
 import { useRef } from "react";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
-import { todoService } from "./TodoService";
+import { todoService } from "../services/TodoService";
 import { Drawer, ThemeProvider, createTheme } from "@mui/material";
 
 function TodoList({ category }) {

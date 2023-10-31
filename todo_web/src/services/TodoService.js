@@ -7,9 +7,9 @@ import {
   editTask,
   toggleStar,
   toggleMyDay,
-} from "./api";
+} from "../apis/todos";
 
-import { useTodos } from "./hooks/useTodos.js";
+import { useTodos } from "../hooks/useTodos.js";
 
 export const todoService = ({ category }) => {
   // when loading all tasks

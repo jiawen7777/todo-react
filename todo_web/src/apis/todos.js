@@ -2,9 +2,9 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8000/api"; // Replace with your backend URL
 
-export const fetchParentTasks = async (category) => {
+export const fetchParentTasks = async (category_id) => {
   try {
-    const response = await axios.get(`${API_URL}/todos?category=${category}`);
+    const response = await axios.get(`${API_URL}/todos?category_id=${category_id}`);
     return response.data.data;
   } catch (error) {
     console.error("Error fetching todos:", error);
@@ -22,15 +22,18 @@ export const fetchSubTasks = async (id) => {
   }
 };
 
-export const addTask = async (title, category = "todo") => {
+export const addTask = async (title, category_id = 1) => {
   try {
-    const response = await axios.post(`${API_URL}/todos`, {
-      title: title,
-      is_completed: false,
-      is_important: category === "important",
-      is_today_task: category === "myday",
-    });
-    return response.data;
+    const response = await axios.post(
+      `${API_URL}/todos?category_id=${category_id}`,
+      {
+        title: title,
+        is_completed: false,
+        is_important: category_id === 3,
+        is_today_task: category_id === 2,
+      }
+    );
+    return response.data.data;
   } catch (error) {
     console.error("Error adding todo:", error);
     throw error;
@@ -45,7 +48,7 @@ export const addSubTask = async (title, id) => {
       is_important: false,
       is_today_task: false
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error adding todo:", error);
     throw error;
@@ -69,7 +72,7 @@ export const toggleTaskComplete = async (tasks, id) => {
       is_important: tasks.find((todo) => todo.id === id).is_important,
       is_today_task: tasks.find((todo) => todo.id === id).is_today_task,
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error when toggling todo completion status:", error);
     throw error;
@@ -85,7 +88,7 @@ export const toggleStar = async (tasks, id) => {
       is_important: !tasks.find((todo) => todo.id === id).is_important,
       is_today_task: tasks.find((todo) => todo.id === id).is_today_task,
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error staring", error);
     throw error;
@@ -101,7 +104,7 @@ export const editTask = async (editedText, todo) => {
       is_important: todo.is_important,
       is_today_task: todo.is_today_task,
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error when toggling todo completion status:", error);
     throw error;
@@ -113,9 +116,19 @@ export const toggleMyDay = async (tasks, id) => {
     const response = await axios.put(`${API_URL}/todos/myday/${id}`, {
       is_today_task: !tasks.find((todo) => todo.id === id).is_today_task,
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error staring", error);
     throw error;
   }
 };
+
+export const fetchCategories = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/category`);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+}

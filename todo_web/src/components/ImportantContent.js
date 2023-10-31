@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import ListEntity from "./ListEntity";
 
 const ImportantContent = () => {
-  const category = "important"
+  const category = 3;
 
   return (
     <Grid container spacing={4} id="todo-list" style={{ padding: 100 }}>

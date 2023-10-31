@@ -8,6 +8,7 @@ class TodoItem(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
+    category_id = Column(Integer, nullable=False, default=1)
     is_completed = Column(Boolean, default=False)
     is_important = Column(Boolean, default=False)
     parent_task_id = Column(Integer, nullable=True)

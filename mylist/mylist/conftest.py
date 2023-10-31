@@ -59,7 +59,7 @@ async def dbsession(
     Get session to database.
 
     Fixture that returns a SQLAlchemy session with a SAVEPOINT, and the rollback to it
-    after the test completes.
+    after the todos completes.
 
     :param _engine: current engine.
     :yields: async session.

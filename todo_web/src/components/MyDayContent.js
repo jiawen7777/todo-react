@@ -1,10 +1,10 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import ListEntity from "./ListEntity";
-import WeatherCard from "./components/TodayinfoContent";
+import WeatherCard from "./TodayinfoContent";
 
 const MyDayContent = () => {
-  const category = "myday";
+  const category = 2;
 
   return (
     <Grid container spacing={4} id="todo-list" style={{ padding: 100 }}>
